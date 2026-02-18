@@ -109,8 +109,6 @@ for i = 1, #BOOKINFO_COLS_SET do
     table.insert(bookinfo_values_sql, "?")
 end
 
-local max_cover_dimen = 600 -- tested 400, 600, and 800
-
 -- Build our most often used SQL queries according to columns
 local BOOKINFO_INSERT_SQL = "INSERT OR REPLACE INTO bookinfo " ..
     "(" .. table.concat(BOOKINFO_COLS_SET, ",") .. ") " ..
@@ -134,6 +132,8 @@ local UNSUPPORTED_REASONS = {
 }
 
 local BookInfoManager = {}
+
+BookInfoManager.max_cover_dimen = 600 -- tested 400, 600, and 800
 
 function BookInfoManager:init()
     self.db_location = DataStorage:getSettingsDir() .. "/PT_bookinfo_cache.sqlite3"
@@ -650,8 +650,8 @@ function BookInfoManager:extractBookInfo(filepath, cover_specs)
             end
             if cover_specs then
                 -- ignore passed cover_specs, make cover at a fixed maximum and keep it forever
-                local spec_max_cover_w = max_cover_dimen
-                local spec_max_cover_h = max_cover_dimen
+                local spec_max_cover_w = BookInfoManager.max_cover_dimen
+                local spec_max_cover_h = BookInfoManager.max_cover_dimen
                 dbrow.cover_fetched = 'Y' -- we had a try at getting a cover
                 local cover_bb = FileManagerBookInfo:getCoverImage(document)
                 if cover_bb then
